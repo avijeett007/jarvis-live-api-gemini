@@ -1,12 +1,12 @@
 # Google Gemini 2.0 Function/Tool Call With N8N.
 
-## 🎥 DeepDive Video
+## 🎥 Watch DeepDive Video
 
 Watch the DeepDive Code Session on Our YouTube Channel:
 
 <p align="center">
-    <a href="https://www.youtube.com/watch?v=vxvAYP6qnGA">
-        <img src="https://img.youtube.com/vi/vxvAYP6qnGA/0.jpg" alt="Gemini 2.0 DeepDive" width="560" height="315">
+    <a href="https://www.youtube.com/watch?v=UAc8TnUyAyo">
+        <img src="https://img.youtube.com/vi/UAc8TnUyAyo/0.jpg" alt="Gemini 2.0 DeepDive" width="560" height="315">
     </a>
 </p>
 
