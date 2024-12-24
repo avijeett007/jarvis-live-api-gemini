@@ -1,0 +1,442 @@
+{
+  "name": "__Calendar_JARVIS_Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "97968015-95ad-4dcd-a325-54705e417094",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        800,
+        560
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "H5TKPetd6jJm5qgK",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "changeme@gmail.com",
+          "mode": "list",
+          "cachedResultName": "changeme@gmail.com"
+        },
+        "start": "={{ $fromAI(\"startTime\") }}",
+        "end": "={{ $fromAI(\"endTime\") }}",
+        "additionalFields": {
+          "summary": "={{ $fromAI(\"eventTitle\") }}"
+        }
+      },
+      "id": "0b0c0b4d-c3f3-4146-bfc6-cb38b5d5ce41",
+      "name": "Create Event",
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.2,
+      "position": [
+        1080,
+        640
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "GbAJlJhepX7jZhaM",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "changeme@gmail.com",
+          "mode": "list",
+          "cachedResultName": "changeme@gmail.com"
+        },
+        "start": "={{ $fromAI(\"startTime\") }}",
+        "end": "={{ $fromAI(\"endTime\") }}",
+        "additionalFields": {
+          "attendees": [
+            "={{ $fromAI(\"attendee\") }}"
+          ],
+          "summary": "={{ $fromAI(\"eventTitle\") }}"
+        }
+      },
+      "id": "4beda7b9-9f90-47ac-b8ab-562ef4a60b0c",
+      "name": "Create Event with Attendee",
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.2,
+      "position": [
+        1320,
+        680
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "GbAJlJhepX7jZhaM",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "changeme@gmail.com",
+          "mode": "list",
+          "cachedResultName": "changeme@gmail.com"
+        },
+        "returnAll": true,
+        "options": {
+          "timeMin": "={{ $fromAI(\"ondDayBefore\",\"one day before the date the user requested\") }}",
+          "timeMax": "={{ $fromAI(\"ondDayAfter\",\"one day after the date the user requested\") }}"
+        }
+      },
+      "id": "9841f8e8-e3da-4879-8d2d-ecd956ba3f80",
+      "name": "Get Events",
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.2,
+      "position": [
+        1420,
+        680
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "GbAJlJhepX7jZhaM",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "db40c217-79fb-4e81-a798-d8899176af18",
+              "name": "response",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0b15dcd6-3543-447c-88be-2847fb9c0ead",
+      "name": "Email Response Node",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1400,
+        280
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "faa8350b-3578-451d-9ebf-91aa2ddb7a62",
+      "name": "Memory For The Agent",
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.4,
+      "position": [
+        940,
+        560
+      ],
+      "credentials": {
+        "redis": {
+          "id": "RxlhkeQVcnn6RHiT",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0157bfc8-fc71-4089-9c44-13163ada4bf9",
+              "name": "sessionId",
+              "value": "={{ $json.body.sessionId }}",
+              "type": "string"
+            },
+            {
+              "id": "88048638-68e3-457f-9077-756625ecc6ed",
+              "name": "chatInput",
+              "value": "={{ $json.body.chatInput }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "179682b6-00c1-40b5-92cb-f47d5aebe5a4",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        760,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "calendar",
+        "calendar": {
+          "__rl": true,
+          "value": "changeme@gmail.com",
+          "mode": "list",
+          "cachedResultName": "changeme@gmail.com"
+        },
+        "timeMin": "={{ $fromAI(\"ondDayStart\",\"The day user has requested\") }}",
+        "timeMax": "={{ $fromAI(\"ondDayEnd\",\"on end day user has requested\") }}",
+        "options": {}
+      },
+      "id": "bf881123-0db1-408d-bcd0-a32c06c14427",
+      "name": "Check Calendar availability",
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.2,
+      "position": [
+        1540,
+        680
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "GbAJlJhepX7jZhaM",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "value": "changeme@gmail.com",
+          "mode": "list",
+          "cachedResultName": "changeme@gmail.com"
+        },
+        "eventId": "{{ $fromAI(\"eventId\",\"The Id of the Event to update or modify\") }}",
+        "updateFields": {
+          "end": "={{ $fromAI(\"startTime\") }}",
+          "start": "={{ $fromAI(\"endTime\") }}"
+        }
+      },
+      "id": "40e258a2-275d-41fe-b65d-2aa65b664d98",
+      "name": "Update Event",
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.2,
+      "position": [
+        1200,
+        700
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "GbAJlJhepX7jZhaM",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "public": true,
+        "mode": "webhook",
+        "options": {}
+      },
+      "id": "c5f36d71-fa2c-452d-9767-55efbff6f737",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        740,
+        180
+      ],
+      "webhookId": "3d8da880-f2cd-4cc0-a7eb-4d860dadb253"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "manage-calendar",
+        "authentication": "headerAuth",
+        "responseMode": "lastNode",
+        "responseData": "allEntries",
+        "options": {}
+      },
+      "id": "ee8a0d55-b94d-4c7d-b1ee-bfb6fd003f53",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        580,
+        380
+      ],
+      "webhookId": "ac6b41db-8025-44b3-8221-6e8ef1b2e11d",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "QSCKKHLks2rAgU9E",
+          "name": "JARVIS_HEADER"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "=You are a smart calendar assistant with access to various tools for managing calendar events. The current date and time is: {{ $now }}. Follow these guidelines for performing actions:\n\nCreate Event\nUse this tool to schedule events without attendees.\nIf no end time is specified, set the event duration to 60 minutes by default.\nCreate Event with Attendee\nUse this tool to schedule events when attendees are specified.\nIf no end time is provided, set the event duration to 60 minutes by default.\nGet Events\nUse this tool to retrieve events for a specified day.\nProvide a summary of the events retrieved.\nUpdate Events\nUse this tool to change the time of an existing event.\nFirst, use the Get Events tool to retrieve the eventId of the specific event you want to update.\nFocus on accuracy and efficiency when executing tasks."
+        }
+      },
+      "id": "f57526a5-0841-4cde-a5d3-26b9007124ae",
+      "name": "Calendar Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1020,
+        280
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Calendar Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Event": {
+      "ai_tool": [
+        [
+          {
+            "node": "Calendar Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Event with Attendee": {
+      "ai_tool": [
+        [
+          {
+            "node": "Calendar Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Events": {
+      "ai_tool": [
+        [
+          {
+            "node": "Calendar Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory For The Agent": {
+      "ai_memory": [
+        [
+          {
+            "node": "Calendar Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Calendar Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Calendar availability": {
+      "ai_tool": [
+        [
+          {
+            "node": "Calendar Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Event": {
+      "ai_tool": [
+        [
+          {
+            "node": "Calendar Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Calendar Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calendar Agent": {
+      "main": [
+        [
+          {
+            "node": "Email Response Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "10108058-dabb-4fb8-95d7-9b4c02eff9bb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6744377aadc0f4f9ac08918f685f761440916f5da603ff8595626e0faa3b3506"
+  },
+  "id": "61N63q7SXAVhMkLz",
+  "tags": [
+    {
+      "createdAt": "2024-12-19T16:21:01.445Z",
+      "updatedAt": "2024-12-19T16:21:01.445Z",
+      "id": "jSYXVrlSAZb4W2Z5",
+      "name": "google_gemini_demo"
+    }
+  ]
+}
